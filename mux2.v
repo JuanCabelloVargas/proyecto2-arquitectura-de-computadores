@@ -1,21 +1,14 @@
 module mux2 (
-    e0,
-    e1,
-    c,
-    out
+  input  [7:0] e0, e1, e2, e3,
+  input  [1:0] sel,
+  output reg [7:0] out
 );
-  input [7:0] e0, e1;
-  input c;
-  output [7:0] out;
-
-  wire [7:0] e0, e1;
-  wire       c;
-  reg  [7:0] out;
-
-  always @(e0, e1, c) begin
-    case (c)
-      1'b0: out = e0;
-      1'b1: out = e1;
+  always @(*) begin
+    case (sel)
+      2'b00: out = e0;
+      2'b01: out = e1;
+      2'b10: out = e2;
+      2'b11: out = e3;
     endcase
   end
 endmodule
