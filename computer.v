@@ -18,94 +18,186 @@ module computer (
   wire [6:0] opcode  = im_out_bus[15:9]; // OpCode a 7 bits
   wire [7:0] K       = im_out_bus[7:0];
 
-
-  reg LA; // Load Register A
-  reg LB; // Load Register B
-  reg [1:0]  selA; // Selector de MuxA
-  reg [1:0]  selB; // Selector de MuxB
-  reg [3:0]  alu_op; // Operacion de la ALU
+  // Señales de control
+  reg LA;  // Load A
+  reg LB;  // Load B
+  reg [1:0] selA; // Mux A: 00=A, 01=B, 10=0, 11=1
+  reg [1:0] selB; // Mux B: 00=B, 01=A, 10=K, 11=0
+  reg [3:0] alu_op; // Operación de la ALU
 
   always @(*) begin
-
-    LA      = 1'b0;
-    LB      = 1'b0;
-    selA    = 2'b00;
-    selB    = 2'b00;
-    alu_op  = 4'b1001;
+    // Valores por defecto (NOP)
+    LA     = 1'b0;
+    LB     = 1'b0;
+    selA   = 2'b10; // 0
+    selB   = 2'b00; // B (irrelevante en NOP)
+    alu_op = 4'b0000; // ADD (sin cargas no altera estado)
 
     case (opcode)
-
-      // A,B => A=B. Se implementa como A = 0 + B
+      // MOV A,B => A = B (A = 0 + B)
       7'b0000000: begin
-        LA     = 1'b1;
-        selA   = 2'b10; // Selecciona '0'
-        selB   = 2'b00; // Selecciona RegB
-        alu_op = 4'b0000; // ALU hace ADD
+        LA=1; selA=2'b10; selB=2'b00; alu_op=4'b0000; // 0 + B
       end
-
-      // B,A => B=A. Se implementa como B = 0 + A
+      // MOV B,A => B = A (B = 0 + A)
       7'b0000001: begin
-        LB     = 1'b1;
-        selA   = 2'b10; // Selecciona '0'
-        selB   = 2'b01; // Selecciona RegA
-        alu_op = 4'b0000; // ALU hace ADD
+        LB=1; selA=2'b10; selB=2'b01; alu_op=4'b0000; // 0 + A
       end
-
-      // A, Lit => A = Lit. Se implementa como A = 0 + K
+      // MOV A,K => A = K (A = 0 + K)
       7'b0000010: begin
-        LA     = 1'b1;
-        selA   = 2'b10; // Selecciona '0'
-        selB   = 2'b10; // Selecciona K
-        alu_op = 4'b0000; // ALU hace ADD
+        LA=1; selA=2'b10; selB=2'b10; alu_op=4'b0000; // 0 + K
       end
-
-      // B, Lit => B = Lit. Se implementa como B = 0 + K
+      // MOV B,K => B = K (B = 0 + K)
       7'b0000011: begin
-        LB     = 1'b1;
-        selA   = 2'b10; // Selecciona '0'
-        selB   = 2'b10; // Selecciona K
-        alu_op = 4'b0000; // ALU hace ADD
+        LB=1; selA=2'b10; selB=2'b10; alu_op=4'b0000; // 0 + K
       end
-
-      // A,B => A = A + B
+      // ADD A,B => A = A + B
       7'b0000100: begin
-        LA     = 1'b1;
-        selA   = 2'b00; // A
-        selB   = 2'b00; // Selecciona B
-        alu_op = 4'b0000; // ALU hace ADD
+        LA=1; selA=2'b00; selB=2'b00; alu_op=4'b0000;
       end
-
-      // A, Lit => A = A + K
+      // ADD B,A => B = B + A
+      7'b0000101: begin
+        LB=1; selA=2'b01; selB=2'b01; alu_op=4'b0000;
+      end
+      // ADD A,K => A = A + K
       7'b0000110: begin
-        LA     = 1'b1;
-        selA   = 2'b00; // A
-        selB   = 2'b10; // K
-        alu_op = 4'b0000; // ALU hace ADD
+        LA=1; selA=2'b00; selB=2'b10; alu_op=4'b0000;
       end
-
-      // B, Lit => B = B + K
+      // ADD B,K => B = B + K
       7'b0000111: begin
-        LB     = 1'b1;
-        selA   = 2'b01; // B
-        selB   = 2'b10; // K
-        alu_op = 4'b0000; // ALU hace ADD
+        LB=1; selA=2'b01; selB=2'b10; alu_op=4'b0000;
       end
-      default: begin
+      // SUB A,B => A = A - B
+      7'b0001000: begin
+        LA=1; selA=2'b00; selB=2'b00; alu_op=4'b0001;
+      end
+      // SUB B,A => B = B - A
+      7'b0001001: begin
+        LB=1; selA=2'b01; selB=2'b01; alu_op=4'b0001;
+      end
+      // SUB A,K => A = A - K
+      7'b0001010: begin
+        LA=1; selA=2'b00; selB=2'b10; alu_op=4'b0001;
+      end
+      // SUB B,K => B = B - K
+      7'b0001011: begin
+        LB=1; selA=2'b01; selB=2'b10; alu_op=4'b0001;
+      end
+      // AND A,B => A = A & B
+      7'b0001100: begin
+        LA=1; selA=2'b00; selB=2'b00; alu_op=4'b0010;
+      end
+      // AND B,A => B = B & A
+      7'b0001101: begin
+        LB=1; selA=2'b01; selB=2'b01; alu_op=4'b0010;
+      end
+      // AND A,K => A = A & K
+      7'b0001110: begin
+        LA=1; selA=2'b00; selB=2'b10; alu_op=4'b0010;
+      end
+      // AND B,K => B = B & K
+      7'b0001111: begin
+        LB=1; selA=2'b01; selB=2'b10; alu_op=4'b0010;
+      end
+      // OR A,B => A = A | B
+      7'b0010000: begin
+        LA=1; selA=2'b00; selB=2'b00; alu_op=4'b0011;
+      end
+      // OR B,A => B = B | A
+      7'b0010001: begin
+        LB=1; selA=2'b01; selB=2'b01; alu_op=4'b0011;
+      end
+      // OR A,K => A = A | K
+      7'b0010010: begin
+        LA=1; selA=2'b00; selB=2'b10; alu_op=4'b0011;
+      end
+      // OR B,K => B = B | K
+      7'b0010011: begin
+        LB=1; selA=2'b01; selB=2'b10; alu_op=4'b0011;
+      end
+      // NOT A,A => A = ~A (usa entrada a)
+      7'b0010100: begin
+        LA=1; selA=2'b00; alu_op=4'b0101; // selB irrelevante
+      end
+      // NOT A,B => A = ~B (mapeando B a 'a')
+      7'b0010101: begin
+        LA=1; selA=2'b01; alu_op=4'b0101; // NOT sobre entrada 'a' (que ahora es B)
+      end
+      // NOT B,A => B = ~A (usa variante NOT sobre b)
+      7'b0010110: begin
+        LB=1; selA=2'b00; selB=2'b01; alu_op=4'b0110; // selB=01 => alu_in_b = A, ALU hace ~b = ~A
+      end
+      // NOT B,B => B = ~B (usa variante NOT sobre b)
+      7'b0010111: begin
+        LB=1; selA=2'b01; alu_op=4'b0110;
+      end
+      // XOR A,B => A = A ^ B
+      7'b0011000: begin
+        LA=1; selA=2'b00; selB=2'b00; alu_op=4'b0100;
+      end
+      // XOR B,A => B = B ^ A
+      7'b0011001: begin
+        LB=1; selA=2'b01; selB=2'b01; alu_op=4'b0100;
+      end
+      // XOR A,K => A = A ^ K
+      7'b0011010: begin
+        LA=1; selA=2'b00; selB=2'b10; alu_op=4'b0100;
+      end
+      // XOR B,K => B = B ^ K
+      7'b0011011: begin
+        LB=1; selA=2'b01; selB=2'b10; alu_op=4'b0100;
+      end
+      // SHL A,A => A = A << 1
+      7'b0011100: begin
+        LA=1; selA=2'b00; alu_op=4'b0111;
+      end
+      // SHL A,B => A = B << 1
+      7'b0011101: begin
+        LA=1; selA=2'b01; alu_op=4'b0111;
+      end
+      // SHL B,A => B = A << 1
+      7'b0011110: begin
+        LB=1; selA=2'b00; alu_op=4'b0111;
+      end
+      // SHL B,B => B = B << 1
+      7'b0011111: begin
+        LB=1; selA=2'b01; alu_op=4'b0111;
+      end
+      // SHR A,A => A = A >> 1
+      7'b0100000: begin
+        LA=1; selA=2'b00; alu_op=4'b1000;
+      end
+      // SHR A,B => A = B >> 1
+      7'b0100001: begin
+        LA=1; selA=2'b01; alu_op=4'b1000;
+      end
+      // SHR B,A => B = A >> 1
+      7'b0100010: begin
+        LB=1; selA=2'b00; alu_op=4'b1000;
+      end
+      // SHR B,B => B = B >> 1
+      7'b0100011: begin
+        LB=1; selA=2'b01; alu_op=4'b1000;
+      end
+      // INC B => B = B + 1 (1 + B)
+      7'b0100100: begin
+        LB=1; selA=2'b11; selB=2'b00; alu_op=4'b0000; // (1) + B
+      end
 
+      default: begin
+        // NOP
       end
     endcase
   end
 
-  // Selecciona la primera entrada de la ALU
-  wire [7:0] alu_in_a = (selA == 2'b00) ? regA_out_bus : // Si selA es 00, selecciona regA
-                        (selA == 2'b01) ? regB_out_bus : // Si selA es 01, selecciona regB
-                        (selA == 2'b10) ? 8'h00 : 8'h01; // Si selA es 10, selecciona '0', si es 11, selecciona '1'
+  // MUX A y B (implementados con lógica)
+  wire [7:0] alu_in_a = (selA == 2'b00) ? regA_out_bus :
+                        (selA == 2'b01) ? regB_out_bus :
+                        (selA == 2'b10) ? 8'h00        : 8'h01;
+  wire [7:0] alu_in_b = (selB == 2'b00) ? regB_out_bus :
+                        (selB == 2'b01) ? regA_out_bus :
+                        (selB == 2'b10) ? K            : 8'h00; // 2'b11 => 0
 
-  // Selecciona la segunda entrada de la ALU
-  wire [7:0] alu_in_b = (selB == 2'b00) ? regB_out_bus : // Si selB es 00, selecciona regB
-                        (selB == 2'b01) ? regA_out_bus : // Si selB es 01, selecciona regA
-                        (selB == 2'b10) ? K : 8'h00; // Si selB es 10, selecciona K, si es 11, selecciona '0'
-
+  // Instancias
   pc PC (
       .clk(clk),
       .pc (pc_out_bus)
@@ -126,16 +218,11 @@ module computer (
       .load(LB),
       .out (regB_out_bus)
   );
-  mux2 muxB (
-      .e0 (regB_out_bus),
-      .e1 (im_out_bus[3:0]),
-      .c  (im_out_bus[8]),
-      .out(muxB_out_bus)
-  );
   alu ALU (
-      .a  (regA_out_bus),
-      .b  (muxB_out_bus),
-      .s  (im_out_bus[5:4]),
-      .out(alu_out_bus)
+      .a  (alu_in_a),
+      .b  (alu_in_b),
+      .s  (alu_op),
+      .out(alu_out_bus),
+      .Z(alu_Z), .N(alu_N), .C(alu_C), .V(alu_V)
   );
 endmodule
