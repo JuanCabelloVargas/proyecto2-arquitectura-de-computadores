@@ -12,10 +12,15 @@ module computer (
   wire [6:0] opcode = im_out_bus[15:9];
   wire [7:0] K      = im_out_bus[7:0];
 
-  // señales de control
-  wire LA, LB;
+  // señales de control  
+  wire LA, LB, LP, W;
   wire [1:0] selA, selB;
+  wire selData;
   wire [3:0] alu_op;
+  
+  // señales de status (flags)
+  wire Z, N, C, V;
+  wire [3:0] status = {Z, N, C, V};
 
   // salidas de mux hacia ALU
   wire [7:0] alu_a_bus;
@@ -35,10 +40,14 @@ module computer (
   // ==== CONTROL ====
   control CU (
       .opcode(opcode),
+      .status(status),
       .LA(LA),
       .LB(LB),
+      .LP(LP),
+      .W(W),
       .selA(selA),
       .selB(selB),
+      .selData(selData),
       .alu_op(alu_op)
   );
 
