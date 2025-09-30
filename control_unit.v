@@ -1,19 +1,26 @@
 module control(
-    input  [6:0] opcode,
-    output reg LA, // Load A
-    output reg LB, // Load B  
-    output reg [1:0] selA, // 00=A, 01=B, 10=0, 11=1
-    output reg [1:0] selB, // 00=B, 01=A, 10=K, 11=0
-    output reg [3:0] alu_op // Operacion ALU
+    input  [6:0] opcode,     // Address desde Instruction Memory
+    input  [3:0] status,     // Status
+    output reg LA,           // Load A
+    output reg LB,           // Load B
+    output reg LP,           // Load PC
+    output reg W,            // Write Data Memory
+    output reg [1:0] selA,   // 00=A, 01=B, 10=0, 11=1 (S hacia Mux A)
+    output reg [1:0] selB,   // 00=B, 01=A, 10=K, 11=0 (S hacia Mux B)
+    output reg selData,      // 0=B, 1=K (S hacia Mux Data)
+    output reg [3:0] alu_op  // S hacia ALU
 );
 
   always @(*) begin
 
-    LA     = 1'b0; 
-    LB     = 1'b0;
-    selA   = 2'b00; 
-    selB   = 2'b00; 
-    alu_op = 4'b0000; 
+    LA      = 1'b0; 
+    LB      = 1'b0;
+    LP      = 1'b0;
+    W       = 1'b0;
+    selA    = 2'b00; 
+    selB    = 2'b00; 
+    selData = 1'b0;
+    alu_op  = 4'b0000; 
 
     case (opcode)
       // MOV A,B => A = B (A = 0 + B)

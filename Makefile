@@ -5,9 +5,11 @@ VERILOG_FILES = \
     pc.v \
     register.v \
     instruction_memory.v \
+    data_memory.v \
     control_unit.v \
     muxA.v \
-	muxB.v
+	muxB.v \
+	muxData.v
 
 TESTBENCH_FILE = testbench.v
 YOSYS_SCRIPT = yosys.tcl
