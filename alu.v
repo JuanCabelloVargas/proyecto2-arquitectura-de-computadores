@@ -36,13 +36,13 @@ module alu (
       4'b0010: out_r = a & b;  // AND
       4'b0011: out_r = a | b;  // OR
       4'b0100: out_r = a ^ b;  // XOR
-      4'b0101: out_r = ~a;  // NOT (sobre a solamente, faltan los otros casos)
-      4'b0110: out_r = ~b; // NOT b
-      4'b0111: begin  // SHL
+      4'b0101: out_r = ~a;     // NOT (sobre a solamente, faltan los otros casos)
+      4'b0110: out_r = ~b;     // NOT b
+      4'b0111: begin           // SHL
         out_r = {a[6:0], 1'b0};
         C_r   = a[7];
       end
-      4'b1000: begin  // SHR 
+      4'b1000: begin           // SHR  
         out_r = {1'b0, a[7:1]};
         C_r   = a[0];
       end
