@@ -57,24 +57,22 @@ module computer (
       .out (regB_out_bus)
   );
 
-  // ==== MUXES 4→1 de 8 bits ====
-  mux2 muxA (
-      .e0(regA_out_bus), // A
-      .e1(regB_out_bus), // B
-      .e2(K),            // literal
-      .e3(8'h00),        // 0
+  muxA muxA (
+      .A  (regA_out_bus),
+      .B  (regB_out_bus),
+      .K_unused(8'h00),   // no se usa
       .sel(selA),
       .out(alu_a_bus)
   );
 
-  mux2 muxB (
-      .e0(regA_out_bus), // A
-      .e1(regB_out_bus), // B
-      .e2(K),
-      .e3(8'h00),
+  muxB muxB (
+      .A  (regA_out_bus),
+      .B  (regB_out_bus),
+      .K  (K),
       .sel(selB),
       .out(alu_b_bus)
   );
+
 
   // ==== ALU ====
   alu ALU (
