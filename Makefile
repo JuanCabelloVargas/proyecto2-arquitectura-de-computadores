@@ -6,7 +6,8 @@ VERILOG_FILES = \
     register.v \
     instruction_memory.v \
     control_unit.v \
-    mux2.v
+    muxA.v \
+	muxB.v
 
 TESTBENCH_FILE = testbench.v
 YOSYS_SCRIPT = yosys.tcl
