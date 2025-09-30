@@ -8,7 +8,7 @@ VERILOG_FILES = \
     control_unit.v \
     mux2.v
 
-TESTBENCH_FILE = test.v
+TESTBENCH_FILE = testbench.v
 YOSYS_SCRIPT = yosys.tcl
 
 # Rutas de salida
