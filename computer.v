@@ -58,7 +58,7 @@ module computer (
   );
 
   // ==== MUXES 4→1 de 8 bits ====
-  mux4_8 muxA (
+  mux2 muxA (
       .e0(regA_out_bus), // A
       .e1(regB_out_bus), // B
       .e2(K),            // literal
@@ -67,7 +67,7 @@ module computer (
       .out(alu_a_bus)
   );
 
-  mux4_8 muxB (
+  mux2 muxB (
       .e0(regA_out_bus), // A
       .e1(regB_out_bus), // B
       .e2(K),
