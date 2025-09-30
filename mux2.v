@@ -1,7 +1,7 @@
 module mux2 (
-  input  [7:0] e0, e1, e2, e3,
-  input  [1:0] sel,
-  output reg [7:0] out
+    input  [7:0] e0, e1, e2, e3,
+    input  [1:0] sel,
+    output reg [7:0] out
 );
   always @(*) begin
     case (sel)
