@@ -14,4 +14,5 @@ module instruction_memory (
 
   initial begin  // lee el archivo im.dat que nos entregaran
   $readmemb("im.dat",mem);
+  end 
 endmodule
