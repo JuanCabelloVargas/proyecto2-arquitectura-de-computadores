@@ -5,7 +5,7 @@ VERILOG_FILES = \
     pc.v \
     register.v \
     instruction_memory.v \
-    control.v \
+    control_unit.v \
     mux2.v
 
 TESTBENCH_FILE = test.v
