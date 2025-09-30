@@ -11,4 +11,7 @@ module instruction_memory (
   reg [15:0]    mem [0:255];
 
   assign out = mem[address];
+
+  initial begin  // lee el archivo im.dat que nos entregaran
+  $readmemb("im.dat",mem);
 endmodule
