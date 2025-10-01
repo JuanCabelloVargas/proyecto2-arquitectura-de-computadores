@@ -1,318 +1,143 @@
 module control(
-    input  [6:0] opcode,     // Address desde Instruction Memory
-    input  [3:0] status,     // Status
-    output reg LA,           // Load A
-    output reg LB,           // Load B
-    output reg LP,           // Load PC
-    output reg W,            // Write Data Memory
-    output reg [1:0] selA,   // 00=A, 01=B, 10=0, 11=1 (S hacia Mux A)
-    output reg [1:0] selB,   // 00=B, 01=A, 10=K, 11=0 (S hacia Mux B)
-    output reg selData,      // 0=B, 1=K (S hacia Mux Data)
-    output reg [3:0] alu_op  // S hacia ALU
+    input  [6:0] opcode,      // desde Instruction Memory
+    input  [3:0] status,      // Z N C V (si los usas para saltos)
+    output reg   LA,          // Load A
+    output reg   LB,          // Load B
+    output reg   LP,          // Load PC
+    output reg   mem_we,      // write enable Data Memory
+    output reg   wbSel,       // 0: ALU -> WB, 1: MEM -> WB
+    output reg [1:0] selA,    // Mux A: 00=A, 01=B, 10=0, 11=1
+    output reg [1:0] selB,    // Mux B: 00=B, 01=A, 10=K, 11=0
+    output reg [1:0] selData, // Mux Data (addr): 00=A, 01=B, 10=K, 11=PC
+    output reg [3:0] alu_op   // operación ALU
 );
 
   always @(*) begin
-
-    LA      = 1'b0; 
+    // Valores por defecto
+    LA      = 1'b0;
     LB      = 1'b0;
     LP      = 1'b0;
-    W       = 1'b0;
-    selA    = 2'b00; 
-    selB    = 2'b00; 
-    selData = 1'b0;
-    alu_op  = 4'b0000; 
+    mem_we  = 1'b0;
+    wbSel   = 1'b0;      // ALU
+    selA    = 2'b00;     // A
+    selB    = 2'b00;     // B
+    selData = 2'b00;     // addr = A
+    alu_op  = 4'b0000;   // ADD
 
     case (opcode)
-      // MOV A,B => A = B (A = 0 + B)
+
+      // MOV A,B => A = B
       7'b0000000: begin
-        LA     = 1; 
-        selA   = 2'b10;   // 0 
+        LA     = 1;
+        selA   = 2'b10;   // 0
         selB   = 2'b00;   // B
-        alu_op = 4'b0000; // ALU hace ADD
-
+        alu_op = 4'b0000; // ADD
       end
-      // MOV B,A => B = A (B = 0 + A)
+
+      // MOV B,A => B = A
       7'b0000001: begin
-        LB     = 1; 
+        LB     = 1;
         selA   = 2'b10;   // 0
         selB   = 2'b01;   // A
-        alu_op = 4'b0000; // ALU hace ADD
+        alu_op = 4'b0000;
       end
 
-      // MOV A,K => A = K (A = 0 + K)
+      // MOV A,K => A = K
       7'b0000010: begin
-        LA     = 1; 
+        LA     = 1;
         selA   = 2'b10;   // 0
         selB   = 2'b10;   // K
-        alu_op = 4'b0000; // ALU hace ADD
+        alu_op = 4'b0000;
       end
 
-      // MOV B,K => B = K (B = 0 + K)
+      // MOV B,K => B = K
       7'b0000011: begin
-        LB     = 1; 
-        selA   = 2'b10;   // 0
+        LB     = 1;
+        selA   = 2'b10;
         selB   = 2'b10;   // K
-        alu_op = 4'b0000; // ALU hace ADD
+        alu_op = 4'b0000;
       end
 
-      // ADD A,B => A = A + B
+      // ADD A,B
       7'b0000100: begin
-        LA     = 1; 
+        LA     = 1;
         selA   = 2'b00;   // A
         selB   = 2'b00;   // B
-        alu_op = 4'b0000; // ALU hace ADD
+        alu_op = 4'b0000;
       end
 
-      // ADD B,A => B = B + A
+      // ADD B,A
       7'b0000101: begin
-        LB     = 1; 
+        LB     = 1;
         selA   = 2'b01;   // B
         selB   = 2'b01;   // A
-        alu_op = 4'b0000; // ALU hace ADD
+        alu_op = 4'b0000;
       end
 
-      // ADD A,K => A = A + K
-      7'b0000110: begin
-        LA     = 1; 
-        selA   = 2'b00;   // A
-        selB   = 2'b10;   // K
-        alu_op = 4'b0000; // ALU hace ADD
-      end
-
-      // ADD B,K => B = B + K
-      7'b0000111: begin
-        LB     = 1; 
-        selA   = 2'b01;   // B
-        selB   = 2'b10;   // K
-        alu_op = 4'b0000; // ALU hace ADD
-      end
-
-      // SUB A,B => A = A - B
+      // SUB A,B
       7'b0001000: begin
-        LA     = 1; 
+        LA     = 1;
         selA   = 2'b00;   // A
         selB   = 2'b00;   // B
-        alu_op = 4'b0001; // ALU hace SUB
+        alu_op = 4'b0001; // SUB
       end
 
-      // SUB B,A => B = B - A
-      7'b0001001: begin
-        LB     = 1; 
-        selA   = 2'b01;   // B
-        selB   = 2'b01;   // A
-        alu_op = 4'b0001; // ALU hace SUB
-      end
-
-      // SUB A,K => A = A - K
-      7'b0001010: begin
-        LA     = 1; 
-        selA   = 2'b00;   // A
-        selB   = 2'b10;   // K
-        alu_op = 4'b0001; // ALU hace SUB
-      end
-
-      // SUB B,K => B = B - K
-      7'b0001011: begin
-        LB     = 1; 
-        selA   = 2'b01;   // B
-        selB   = 2'b10;   // K
-        alu_op = 4'b0001; // ALU hace SUB
-      end
-
-      // AND A,B => A = A and B
-      7'b0001100: begin
-        LA     = 1; 
-        selA   = 2'b00;   // A
-        selB   = 2'b00;   // B
-        alu_op = 4'b0010; // ALU hace AND
-      end
-
-      // AND B,A => B = B and A
-      7'b0001101: begin
-        LB     = 1; 
-        selA   = 2'b01;   // B
-        selB   = 2'b01;   // A
-        alu_op = 4'b0010; // ALU hace AND
-      end
-
-      // AND A,K => A = A and K
+      // AND A,K
       7'b0001110: begin
-        LA     = 1; 
-        selA   = 2'b00;   // A
+        LA     = 1;
+        selA   = 2'b00;
         selB   = 2'b10;   // K
-        alu_op = 4'b0010; // ALU hace AND
+        alu_op = 4'b0010; // AND
       end
 
-      // AND B,K => B = B and K
-      7'b0001111: begin
-        LB     = 1; 
-        selA   = 2'b01;   // B
-        selB   = 2'b10;   // K
-        alu_op = 4'b0010; // ALU hace AND
-      end
-
-      // OR A,B => A = A or B
-      7'b0010000: begin
-        LA     = 1; 
-        selA   = 2'b00;   // A
-        selB   = 2'b00;   // B
-        alu_op = 4'b0011; // ALU hace OR
-      end
-
-      // OR B,A => B = B or A
+      // OR B,A
       7'b0010001: begin
-        LB     = 1; 
+        LB     = 1;
         selA   = 2'b01;   // B
         selB   = 2'b01;   // A
-        alu_op = 4'b0011; // ALU hace OR
+        alu_op = 4'b0011; // OR
       end
 
-      // OR A,K => A = A or K
-      7'b0010010: begin
-        LA     = 1; 
-        selA   = 2'b00;   // A
-        selB   = 2'b10;   // K
-        alu_op = 4'b0011; // ALU hace OR
-      end
-
-      // OR B,K => B = B or K
-      7'b0010011: begin
-        LB     = 1; 
-        selA   = 2'b01;   // B
-        selB   = 2'b10;   // K
-        alu_op = 4'b0011; // ALU hace OR
-      end
-
-      // NOT A,A => A = ~A 
-      7'b0010100: begin
-        LA     = 1; 
-        selA   = 2'b00;   // A
-        alu_op = 4'b0101; // ALU hace NOT
-      end
-
-      // NOT A,B => A = ~B 
-      7'b0010101: begin
-        LA     = 1; 
-        selA   = 2'b01;   // B
-        alu_op = 4'b0101; // ALU hace NOT
-      end
-
-      // NOT B,A => B = ~A 
-      7'b0010110: begin
-        LB     = 1; 
-        selA   = 2'b00;   // A
-        selB   = 2'b01;   // B
-        alu_op = 4'b0110; // ALU hace NOT
-      end
-
-      // NOT B,B => B = ~B 
-      7'b0010111: begin
-        LB     = 1; 
-        selA   = 2'b01;   // B
-        alu_op = 4'b0110; // ALU hace NOT
-      end
-
-      // XOR A,B => A = A xor B
-      7'b0011000: begin
-        LA     = 1; 
-        selA   = 2'b00;   // A
-        selB   = 2'b00;   // B
-        alu_op = 4'b0100; // ALU hace XOR
-      end
-
-      // XOR B,A => B = B xor A
-      7'b0011001: begin
-        LB     = 1; 
-        selA   = 2'b01;   // B
-        selB   = 2'b01;   // A
-        alu_op = 4'b0100; // ALU hace XOR
-      end
-
-      // XOR A,K => A = A xor K
-      7'b0011010: begin
-        LA     = 1; 
-        selA   = 2'b00;   // A
-        selB   = 2'b10;   // K
-        alu_op = 4'b0100; // ALU hace XOR
-      end
-
-      // XOR B,K => B = B xor K
-      7'b0011011: begin
-        LB     = 1; 
-        selA   = 2'b01;   // B
-        selB   = 2'b10;   // K
-        alu_op = 4'b0100; // ALU hace XOR
-      end
-
-      // SHL A,A => A = shift left A 
+      // SHL A,A
       7'b0011100: begin
-        LA     = 1; 
+        LA     = 1;
         selA   = 2'b00;   // A
-        alu_op = 4'b0111; // ALU hace SHL
+        alu_op = 4'b0111; // SHL
       end
 
-      // SHL A,B => A = shift left B
-      7'b0011101: begin
-        LA     = 1; 
-        selA   = 2'b01;   // B
-        alu_op = 4'b0111; // ALU hace SHL
-      end
-
-      // SHL B,A => B = shift left A
-      7'b0011110: begin
-        LB     = 1; 
-        selA   = 2'b00; // A
-        alu_op = 4'b0111; // ALU hace SHL
-      end
-
-      // SHL B,B => B = shift left B
-      7'b0011111: begin
-        LB     = 1; 
-        selA   = 2'b01;   // B
-        alu_op = 4'b0111; // ALU hace SHL
-      end
-
-      // SHR A,A => A = shift right A
-      7'b0100000: begin
-        LA     = 1; 
-        selA   = 2'b00;   // A
-        alu_op = 4'b1000; // ALU hace SHR
-      end
-
-      // SHR A,B => A = shift right B
-      7'b0100001: begin
-        LA     = 1; 
-        selA   = 2'b01;   // B
-        alu_op = 4'b1000; // ALU hace SHR
-      end
-
-      // SHR B,A => B = shift right A
-      7'b0100010: begin
-        LB     = 1; 
-        selA   = 2'b00;   // A
-        alu_op = 4'b1000; // ALU hace SHR
-      end
-
-      // SHR B,B => B = shift right B
+      // SHR B,B
       7'b0100011: begin
-        LB     = 1; 
+        LB     = 1;
         selA   = 2'b01;   // B
-        alu_op = 4'b1000; // ALU hace SHR
+        alu_op = 4'b1000; // SHR
       end
 
-      // INC B => B = B + 1 
+      // INC B => B = B + 1
       7'b0100100: begin
-        LB     = 1; 
-        selA   = 2'b11;   // B
-        selB   = 2'b00;   // 1
-        alu_op = 4'b0000; // ALU hace ADD
+        LB     = 1;
+        selA   = 2'b11;   // 1
+        selB   = 2'b00;   // B
+        alu_op = 4'b0000; // ADD
+      end
+
+      // Ejemplo LOAD A (opcode a definir) => A = MEM[addr]
+      7'b0101000: begin
+        LA      = 1;
+        wbSel   = 1'b1;   // MEM -> WB
+        mem_we  = 1'b0;   // lectura
+        selData = 2'b00;  // addr = A (puedes cambiarlo)
+      end
+
+      // Ejemplo STORE B (opcode a definir) => MEM[addr] = B
+      7'b0101010: begin
+        wbSel   = 1'b0;   // no WB
+        mem_we  = 1'b1;   // escribir
+        selData = 2'b01;  // addr = B (puedes cambiarlo)
       end
 
       default: begin
-        // Nada
+        // NOP
       end
-
     endcase
   end
-
 endmodule

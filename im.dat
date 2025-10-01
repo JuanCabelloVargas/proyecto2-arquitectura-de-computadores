@@ -14,3 +14,4 @@
 // Instruction 6: MOV A, 5 (Overwrites A)
 000001000000101
 // Instruction 7: SHL A, A (A = A << 1 -> A = 5 * 2 = 10)
+001110000000000

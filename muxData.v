@@ -1,9 +1,10 @@
 module muxData (
-    input  [7:0] A,         // No se usa, solo para consistencia
-    input  [7:0] B,         // Registro B
-    input  [7:0] K,         // Literal de la instruccion
-    input  [1:0] sel,       // Selector S de Control Unit **Revisarlo, porque estoy confundido con si es 1 o 2 bits**
-    output reg [7:0] out    // Salida Address hacia Data Memory
+  input  [7:0] A,
+  input  [7:0] B,
+  input  [7:0] K,
+  input  [7:0] PC,     // <-- asegúrate que exista y se llame PC
+  input  [1:0] sel,
+  output reg [7:0] out
 );
 
   always @(*) begin

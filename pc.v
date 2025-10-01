@@ -12,7 +12,7 @@ module pc (
     pc = 0;
   end
 
-    always @(negedge clk) begin
+    always @(posedge clk) begin
     pc <= pc + 1;
   end
 endmodule

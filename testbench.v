@@ -8,18 +8,31 @@ module test;
     reg           shl_test_failed = 1'b0;
 
     // ------------------------------------------------------------
-    // IMPORTANTE!! Editar con el modulo de su computador
+    // Instancia del computador
     // ------------------------------------------------------------
     computer Comp(.clk(clk));
     // ------------------------------------------------------------
 
     // ------------------------------------------------------------
-    // IMPORTANTE!! Editar para que la variable apunte a la salida
-    // de los registros de su computador.
+    // Exponer registros A y B para los tests
     // ------------------------------------------------------------
     assign regA_out = Comp.regA.out;
     assign regB_out = Comp.regB.out;
     // ------------------------------------------------------------
+
+    // DEBUG MONITOR
+    initial begin
+        $display("t | PC | opcode | LA LB wbSel mem_we | selA selB selData | alu_op | ALUout WBdata A B");
+        $monitor("%0t | %0d | %b |  %b  %b    %b     %b   |  %b    %b     %b    |  %b   | %0d    %0d   %0d %0d",
+                 $time,
+                 Comp.pc_out_bus,
+                 Comp.opcode,
+                 Comp.LA, Comp.LB, Comp.wbSel, Comp.mem_we,
+                 Comp.selA, Comp.selB, Comp.selData,
+                 Comp.alu_op,
+                 Comp.alu_out_bus, Comp.wb_data,
+                 Comp.regA_out_bus, Comp.regB_out_bus);
+    end
 
     initial begin
         $dumpfile("out/dump.vcd");
