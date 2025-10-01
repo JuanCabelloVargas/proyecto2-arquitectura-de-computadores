@@ -2,7 +2,7 @@ module muxData (
   input  [7:0] A,
   input  [7:0] B,
   input  [7:0] K,
-  input  [7:0] PC,     // <-- asegúrate que exista y se llame PC
+  input  [7:0] PC,     
   input  [1:0] sel,
   output reg [7:0] out
 );

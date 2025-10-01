@@ -1,19 +1,18 @@
 module control(
     input  [6:0] opcode,      // desde Instruction Memory
-    input  [3:0] status,      // Z N C V (si los usas para saltos)
+    input  [3:0] status,      
     output reg   LA,          // Load A
-    output reg   LB,          // Load B
-    output reg   LP,          // Load PC
-    output reg   mem_we,      // write enable Data Memory
-    output reg   wbSel,       // 0: ALU -> WB, 1: MEM -> WB
-    output reg [1:0] selA,    // Mux A: 00=A, 01=B, 10=0, 11=1
-    output reg [1:0] selB,    // Mux B: 00=B, 01=A, 10=K, 11=0
-    output reg [1:0] selData, // Mux Data (addr): 00=A, 01=B, 10=K, 11=PC
+    output reg   LB,          
+    output reg   LP,          
+    output reg   mem_we,     
+    output reg   wbSel,       
+    output reg [1:0] selA,    
+    output reg [1:0] selB,    
+    output reg [1:0] selData, 
     output reg [3:0] alu_op   // operación ALU
 );
 
   always @(*) begin
-    // Valores por defecto
     LA      = 1'b0;
     LB      = 1'b0;
     LP      = 1'b0;
@@ -120,7 +119,6 @@ module control(
         alu_op = 4'b0000; // ADD
       end
 
-      // Ejemplo LOAD A (opcode a definir) => A = MEM[addr]
       7'b0101000: begin
         LA      = 1;
         wbSel   = 1'b1;   // MEM -> WB
@@ -128,7 +126,6 @@ module control(
         selData = 2'b00;  // addr = A (puedes cambiarlo)
       end
 
-      // Ejemplo STORE B (opcode a definir) => MEM[addr] = B
       7'b0101010: begin
         wbSel   = 1'b0;   // no WB
         mem_we  = 1'b1;   // escribir
