@@ -1,5 +1,5 @@
 $date
-	Tue Sep 30 22:50:32 2025
+	Tue Sep 30 23:05:21 2025
 $end
 $version
 	Icarus Verilog
@@ -16,9 +16,9 @@ $var reg 1 % mov_test_failed $end
 $var reg 1 & shl_test_failed $end
 $scope module Comp $end
 $var wire 1 $ clk $end
-$var wire 8 ' wb_data [7:0] $end
-$var wire 1 ( wbSel $end
-$var wire 4 ) status [3:0] $end
+$var wire 4 ' status_out [3:0] $end
+$var wire 8 ( wb_data [7:0] $end
+$var wire 1 ) wbSel $end
 $var wire 2 * selData [1:0] $end
 $var wire 2 + selB [1:0] $end
 $var wire 2 , selA [1:0] $end
@@ -68,7 +68,7 @@ $var reg 1 1 mem_we $end
 $var reg 2 K selA [1:0] $end
 $var reg 2 L selB [1:0] $end
 $var reg 2 M selData [1:0] $end
-$var reg 1 ( wbSel $end
+$var reg 1 ) wbSel $end
 $upscope $end
 $scope module DM $end
 $var wire 1 1 W $end
@@ -111,7 +111,7 @@ $upscope $end
 $scope module muxWB $end
 $var wire 8 e alu_out [7:0] $end
 $var wire 8 f mem_out [7:0] $end
-$var wire 1 ( sel $end
+$var wire 1 ) sel $end
 $var wire 8 g out [7:0] $end
 $upscope $end
 $scope module regA $end
@@ -126,11 +126,31 @@ $var wire 8 j data [7:0] $end
 $var wire 1 = load $end
 $var reg 8 k out [7:0] $end
 $upscope $end
+$scope module status_reg $end
+$var wire 1 @ C_in $end
+$var wire 1 ; N_in $end
+$var wire 1 : V_in $end
+$var wire 1 9 Z_in $end
+$var wire 1 $ clk $end
+$var wire 4 l status_out [3:0] $end
+$var reg 1 m C $end
+$var reg 1 n N $end
+$var reg 1 o V $end
+$var reg 1 p Z $end
+$upscope $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
 #0
 $dumpvars
+xp
+xo
+xn
+xm
+bx l
 b0 k
 b101010 j
 b0 i
@@ -165,7 +185,7 @@ b0 M
 b10 L
 b10 K
 b0 J
-b0 I
+bx I
 b10 H
 b101010 G
 b0 F
@@ -197,9 +217,9 @@ b0 -
 b10 ,
 b10 +
 b0 *
-b0 )
-0(
-b101010 '
+0)
+b101010 (
+bx '
 0&
 0%
 0$
@@ -208,7 +228,7 @@ b0 "
 b0 !
 $end
 #1
-b1111011 '
+b1111011 (
 b1111011 g
 b1111011 h
 b1111011 j
@@ -246,11 +266,18 @@ b101010 X
 b101010 ^
 b101010 c
 b101010 i
+0m
+0o
+0n
+b0 '
+b0 I
+b0 l
+0p
 1$
 #2
 0$
 #3
-b10 '
+b10 (
 b10 g
 b10 h
 b10 j
@@ -299,7 +326,7 @@ b10 Z
 #4
 0$
 #5
-b11 '
+b11 (
 b11 g
 b11 h
 b11 j
@@ -341,7 +368,7 @@ b10 i
 #6
 0$
 #7
-b101 '
+b101 (
 b101 g
 b101 h
 b101 j
@@ -349,8 +376,9 @@ b10 8
 b10 F
 b10 _
 b11111111 D
-b0 )
+b0 '
 b0 I
+b0 l
 09
 b101 5
 b101 A
@@ -396,7 +424,7 @@ b100 Z
 #8
 0$
 #9
-b101 '
+b101 (
 b101 g
 b101 h
 b101 j
@@ -440,7 +468,7 @@ b101 i
 #10
 0$
 #11
-b1010 '
+b1010 (
 b1010 g
 b1010 h
 b1010 j
@@ -481,7 +509,7 @@ b110 Z
 #12
 0$
 #13
-b11 '
+b11 (
 b11 g
 b11 h
 b11 j

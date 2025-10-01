@@ -4,11 +4,12 @@ module status (
     input  N_in,          
     input  V_in,          
     input  C_in,          
-    output reg Z,         
-    output reg N,         
-    output reg V,         
-    output reg C          
+    output [3:0] status_out          
 );
+
+    reg Z, N, V, C;
+    
+    assign status_out = {Z, N, C, V};
 
     always @(posedge clk) begin 
         Z <= Z_in;   

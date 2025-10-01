@@ -10,7 +10,8 @@ VERILOG_FILES = \
     muxA.v \
 	muxB.v \
 	muxData.v \
-	muxWB.v
+	muxWB.v \
+	status.v
 
 TESTBENCH_FILE = testbench.v
 YOSYS_SCRIPT = yosys.tcl

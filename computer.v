@@ -20,7 +20,7 @@ module computer (
   
   // señales de status (flags)
   wire Z, N, C, V;
-  wire [3:0] status = {Z, N, C, V};
+  wire [3:0] status_out = {Z, N, C, V};
 
   // salidas de mux hacia ALU
   wire [7:0] alu_a_bus;
@@ -40,7 +40,7 @@ module computer (
   // ==== CONTROL ====
   control CU (
     .opcode(opcode),
-    .status(status),
+    .status(status_out),
     .LA(LA),
     .LB(LB),
     .LP(LP),
@@ -125,6 +125,16 @@ module computer (
       .N(N),
       .C(C),
       .V(V)
+  );
+
+  // ==== REGISTRO DE ESTADO ====
+  status status_reg (
+      .clk(clk),
+      .Z_in(Z),
+      .N_in(N),
+      .C_in(C),
+      .V_in(V),
+      .status_out(status_out)
   );
 
 endmodule
