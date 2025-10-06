@@ -29,7 +29,6 @@ module control(
         selA   = 2'b10; // 0 
         selB   = 2'b00; // B
         alu_op = 4'b0000; // ALU hace ADD
-
       end
       // MOV B,A => B = A (B = 0 + A)
       7'b0000001: begin
@@ -308,10 +307,234 @@ module control(
         alu_op = 4'b0000; // ALU hace ADD
       end
 
+      // instrucciones con direccionamiento
+
+      // MOV A,DIR => A = MEM[LIT]
+      7'b0100101: begin
+      end
+
+      // MOV B,DIR => B = MEM[LIT]
+      7'b0100110: begin
+      end
+
+      // MOV (DIR),A => MEM[LIT] = A
+      7'b0100111: begin
+      end
+
+      // MOV (DIR),B => MEM[LIT] = B
+      7'b0101000: begin
+      end
+
+      // MOV A,(B) => A = MEM[B]
+      7'b0101001: begin
+      end
+
+      // MOV B,(B) => B = MEM[B]
+      7'b0101010: begin
+      end
+
+      // MOV (B),A => MEM[B] = A
+      7'b0101011: begin
+      end
+
+      // ADD A,(DIR)
+      7'b0101100: begin
+      end
+
+      // ADD B,(DIR)
+      7'b0101101: begin
+      end
+
+      // ADD A,(B)
+      7'b0101110: begin
+      end
+
+      // ADD (DIR)
+      7'b0101111: begin
+      end
+
+      // SUB A,(DIR)
+      7'b0110000: begin
+      end
+
+      // SUB B,(DIR)
+      7'b0110001: begin
+      end
+
+      // SUB A,(B)
+      7'b0110010: begin
+      end
+
+      // SUB (DIR)
+      7'b0110011: begin
+      end
+
+      // AND A,(DIR)
+      7'b0110100: begin
+      end
+
+      // AND B,(DIR)
+      7'b0110101: begin
+      end
+
+      // AND A,(B)
+      7'b0110110: begin
+      end
+
+      // AND (DIR)
+      7'b0110111: begin
+      end
+
+      // OR A,(DIR)
+      7'b0111000: begin
+      end
+
+      // OR B,(DIR)
+      7'b0111001: begin
+      end
+
+      // OR A,(B)
+      7'b0111010: begin
+      end
+
+      // OR (DIR)
+      7'b0111011: begin
+      end
+
+      // NOT (DIR),A
+      7'b0111100: begin
+      end
+
+      // NOT (DIR),B
+      7'b0111101: begin
+      end
+
+      // NOT (B)
+      7'b0111110: begin
+      end
+
+      // XOR A,(DIR)
+      7'b0111111: begin
+      end
+
+      // XOR B,(DIR)
+      7'b1000000: begin
+      end
+
+      // XOR A,(B)
+      7'b1000001: begin
+      end
+
+      // XOR (DIR)
+      7'b1000010: begin
+      end
+
+      // SHL (DIR),A
+      7'b1000011: begin
+      end
+
+      // SHL (DIR),B
+      7'b1000100: begin
+      end
+
+      // SHL (B)
+      7'b1000101: begin
+      end
+
+      // SHR (DIR),A
+      7'b1000110: begin
+      end
+
+      // SHR (DIR),B
+      7'b1000111: begin
+      end
+
+      // SHR (B)
+      7'b1001000: begin
+      end
+
+      // INC (DIR)
+      7'b1001001: begin
+      end
+
+      // INC (B)
+      7'b1001010: begin
+      end
+
+      // RST (DIR)
+      7'b1001011: begin
+      end
+
+      // RST (B)
+      7'b1001100: begin
+      end
+
+      // instrucciones de salto
+
+      // CMP A,B
+      7'b1001101: begin
+      end
+
+      // CMP A,K
+      7'b1001110: begin
+      end
+
+      // CMP B,K
+      7'b1001111: begin
+      end
+
+      // CMP A,(DIR)
+      7'b1010000: begin
+      end
+
+      // CMP B,(DIR)
+      7'b1010001: begin
+      end
+
+      // CMP A,(B)
+      7'b1010010: begin
+      end
+
+      // JMP DIR
+      7'b1010011: begin
+      end
+
+      // JEQ DIR
+      7'b1010100: begin
+      end
+
+      // JNE DIR
+      7'b1010101: begin
+      end
+
+      // JGT DIR
+      7'b1010110: begin
+      end
+
+      // JLT DIR
+      7'b1010111: begin
+      end
+
+      // JGE DIR
+      7'b1011000: begin
+      end
+
+      // JLE DIR
+      7'b1011001: begin
+      end
+
+      // JCR DIR
+      7'b1011010: begin
+      end
+
+      // JOV DIR
+      7'b1011011: begin
+      end
+
+      
       default: begin
         // Nada
       end
-
     endcase
   end
 
