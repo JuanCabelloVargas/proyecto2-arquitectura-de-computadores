@@ -98,8 +98,8 @@ module control(
       // SUB B,A => B = B - A
       7'b0001001: begin
         LB     = 1; 
-        selA   = 2'b01; // B
-        selB   = 2'b01; // A
+        selA   = 2'b00; // B
+        selB   = 2'b00; // A
         alu_op = 4'b0001; // ALU hace SUB
       end
 
