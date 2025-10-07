@@ -103,6 +103,7 @@ module computer (
       .A  (regA_out_bus),
       .B  (regB_out_bus),
       .K_unused(8'h00),
+      .mem_data(dmem_out),
       .sel(selA),
       .out(alu_a_bus)
   );
@@ -111,6 +112,7 @@ module computer (
       .A  (regA_out_bus),
       .B  (regB_out_bus),
       .K  (K),
+      .mem_data(dmem_out),
       .sel(selB),
       .out(alu_b_bus)
   );
