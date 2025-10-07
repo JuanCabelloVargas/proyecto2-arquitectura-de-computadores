@@ -46,6 +46,10 @@ module alu (
         out_r = {1'b0, a[7:1]};
         C_r   = a[0];
       end
+      4'b1001: begin  /7 inc
+        {C_r, out_r} = a + 1'd1;
+        V_r = (a == 8'h7F);             // overflow con signo 0x7F->0x80
+      end
     endcase
   end
 

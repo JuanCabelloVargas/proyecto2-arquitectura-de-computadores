@@ -308,7 +308,7 @@ module control(
       // INC B => B = B + 1 
       7'b0100100: begin
         LB     = 1; 
-        selA   = 2'b11;
+        selA   = 2'b00; // revisar 
         selB   = 2'b00;
         alu_op = 4'b0000;
       end
@@ -636,7 +636,7 @@ module control(
       // INC (DIR) => MEM[LIT] = MEM[LIT] + 1
       7'b1001001: begin
         mem_we  = 1;        
-        selA    = 2'b11;  
+        selA    = 2'b00;  // revisar
         selData = 2'b10;   
         alu_op  = 4'b1001; 
       end
@@ -644,7 +644,7 @@ module control(
       // INC (B) => MEM[B] = MEM[B] + 1
       7'b1001010: begin
         mem_we  = 1;     
-        selA    = 2'b11;  
+        selA    = 2'b00;   // revisar
         selData = 2'b00;   
         alu_op  = 4'b1001; 
       end

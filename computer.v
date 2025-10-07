@@ -123,10 +123,10 @@ module computer (
       .b  (alu_b_bus),
       .s  (alu_op),
       .out(alu_out_bus),
-      .Z(Z),
-      .N(N),
-      .C(C),
-      .V(V)
+      .Z(Z_from_alu),  // cambiado revisar
+      .N(N_from_alu),
+      .C(C_from_alu),
+      .V(V_from_alu)
   );
 
   
