@@ -1,4 +1,4 @@
-module data_memory (
+module DM (
     input  clk,
     input  W,               
     input  [7:0] address,   

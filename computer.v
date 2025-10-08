@@ -83,7 +83,7 @@ module computer (
     .out(dmem_data_in)
   );
 
-  data_memory DM (
+  DM DM (
     .clk(clk),
     .address(dmem_addr),
     .data_in(dmem_data_in),
