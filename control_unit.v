@@ -9,6 +9,7 @@ module control (
   output reg [1:0] selA,    // 00:A, 01:B, 10:0, 11:1
   output reg [1:0] selB,    // 00:B, 01:A, 10:K, 11:mem_data
   output reg [1:0] selData, // 00:B, 10:K
+  output reg [1:0] selMemData, // Para datos a escribir: 00:B, 01:A, 10:K, 11:ALU
   output reg [3:0] alu_op
 );
 
@@ -31,15 +32,16 @@ module control (
 
   always @(*) begin
     // Defaults
-    LA      = 1'b0;
-    LB      = 1'b0;
-    LP      = 1'b0;
-    mem_we  = 1'b0;
-    wbSel   = 1'b0;   // ALU
-    selA    = 2'b00;  // A
-    selB    = 2'b00;  // B
-    selData = 2'b00;  // addr = B (cuando aplique)
-    alu_op  = ALU_ADD;
+    LA         = 1'b0;
+    LB         = 1'b0;
+    LP         = 1'b0;
+    mem_we     = 1'b0;
+    wbSel      = 1'b0;   // ALU
+    selA       = 2'b00;  // A
+    selB       = 2'b00;  // B
+    selData    = 2'b00;  // addr = B (cuando aplique)
+    selMemData = 2'b00;  // data = B (cuando aplique)
+    alu_op     = ALU_ADD;
 
     case (opcode)
 
@@ -350,16 +352,16 @@ module control (
 
       // MOV DIR,A => MEM[LIT] = A
       7'b0100111: begin
-        mem_we  = 1'b1; 
-        selData = 2'b10; 
-        selA    = 2'b00;  
+        mem_we     = 1'b1; 
+        selData    = 2'b10; 
+        selMemData = 2'b01; 
       end
 
       // MOV [K],B => MEM[LIT] = B
       7'b0101000: begin
-        mem_we  = 1'b1;
-        selData = 2'b10;
-        selB    = 2'b00;
+        mem_we     = 1'b1;
+        selData    = 2'b10; 
+        selMemData = 2'b00;  
       end
 
       // MOV A,[B] => A = MEM[B]
@@ -378,9 +380,9 @@ module control (
 
       // MOV [B],A => MEM[B] = A
       7'b0101011: begin
-        mem_we  = 1'b1; 
-        selData = 2'b00; 
-        selA    = 2'b00;
+        mem_we     = 1'b1; 
+        selData    = 2'b00; 
+        selMemData = 2'b01;  
       end
 
       // ADD A,(DIR) => A = A + MEM[LIT]

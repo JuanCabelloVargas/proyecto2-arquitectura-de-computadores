@@ -18,6 +18,7 @@ module computer (
   wire wbSel;               
   wire [1:0] selA, selB;    
   wire [1:0] selData;       
+  wire [1:0] selMemData;   
   wire [3:0] alu_op;
 
 
@@ -53,12 +54,14 @@ module computer (
     .selA(selA),
     .selB(selB),
     .selData(selData),
+    .selMemData(selMemData),  
     .alu_op(alu_op)
   );
 
 
   wire [7:0] dmem_addr;
   wire [7:0] dmem_out;
+  wire [7:0] dmem_data_in;
 
 
   muxData MUXD (
@@ -71,10 +74,19 @@ module computer (
   );
 
 
+  muxMemWrite MUXMW (
+    .A (regA_out_bus),
+    .B (regB_out_bus),
+    .K (K),
+    .alu_out(alu_out_bus),
+    .sel(selMemData),     
+    .out(dmem_data_in)
+  );
+
   data_memory DM (
     .clk(clk),
     .address(dmem_addr),
-    .data_in(regB_out_bus),
+    .data_in(dmem_data_in),
     .W(mem_we),
     .data_out(dmem_out)
   );
