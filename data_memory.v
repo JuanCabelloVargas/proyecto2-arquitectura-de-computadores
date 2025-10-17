@@ -1,4 +1,5 @@
-module DM (
+
+module data_memory (
     input  clk,
     input  W,               
     input  [7:0] address,   
@@ -11,7 +12,7 @@ module DM (
 
     always @(posedge clk) begin
         if (W) begin 
-            mem[address] <= data_in; // Escribe data_in en la dirección address
+            mem[address] <= data_in;
         end
     end
 

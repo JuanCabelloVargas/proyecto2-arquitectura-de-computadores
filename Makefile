@@ -11,7 +11,6 @@ VERILOG_FILES = \
 	muxB.v \
 	muxData.v \
 	muxWB.v \
-	muxMemWrite.v \
 	status.v
 
 TESTBENCH_FILE = testbench.v
