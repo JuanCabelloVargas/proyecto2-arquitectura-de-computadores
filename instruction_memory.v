@@ -2,19 +2,21 @@ module instruction_memory (
   input  [7:0]  address,
   output [14:0] out
 );
-  reg [14:0] mem [0:255];
+  // Memoria reducida para FPGA pequeña: solo 64 posiciones en lugar de 256
+  reg [14:0] mem [0:63];
 
   initial begin
-    $readmemb("im.dat", mem);
+    $readmemb("im.dat", mem); // Usar im.dat con programa simple
   end
 
   integer i;
   initial begin
     #0.1;
-    for (i = 0; i < 256; i = i + 1) begin
-      if (^mem[i] === 1'bx) mem[i] = 16'h0000;
+    for (i = 0; i < 64; i = i + 1) begin
+      if (^mem[i] === 1'bx) mem[i] = 15'h0000;
     end
   end
 
-  assign out = mem[address];
+  // Solo usar los 6 bits menos significativos de la dirección
+  assign out = mem[address[5:0]];
 endmodule

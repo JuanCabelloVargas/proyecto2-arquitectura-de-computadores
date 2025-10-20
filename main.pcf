@@ -1,0 +1,18 @@
+# Archivo de restricciones de pines para FPGA Go Board
+# Pin constraints file (.pcf) para la placa Go Board de Nandland
+# Basado en: https://www.nandland.com/goboard/Go_Board_Constraints.pcf
+
+# Reloj principal (25 MHz)
+set_io i_clk 15
+
+# Botones (activos en bajo - pull-up interno)
+set_io i_button_1 53
+set_io i_button_2 51
+set_io i_button_3 54
+set_io i_button_4 52
+
+# LEDs (activos en alto) - Confirmados del ejemplo oficial
+set_io o_led_1 56
+set_io o_led_2 57
+set_io o_led_3 59
+set_io o_led_4 60

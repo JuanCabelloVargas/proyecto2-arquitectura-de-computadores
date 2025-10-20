@@ -12,8 +12,8 @@ module pc (
 
   always @(posedge clk) begin
     if (LP)
-      pc <= K;
+      pc <= K & 8'h3F; // Limitar PC a 6 bits (0-63) para memoria reducida
     else
-      pc <= pc + 1;
+      pc <= (pc + 1) & 8'h3F; // Limitar incremento también
   end
 endmodule
