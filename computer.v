@@ -1,3 +1,4 @@
+
 module computer (
     input clk,
     output [7:0] alu_out_bus
@@ -8,27 +9,24 @@ module computer (
   wire [7:0]  regA_out_bus;
   wire [7:0]  regB_out_bus;
 
-  
   wire [6:0] opcode = im_out_bus[14:8];
   wire [7:0] K      = im_out_bus[7:0];
 
-   
   wire LA, LB, LP, W, mem_we;
   wire [1:0] selA, selB, selData;  
   wire       wbSel;                
   wire [3:0] alu_op;
   
-  
   wire Z, N, C, V;
-  wire [3:0] status_out = {Z, N, C, V};
+  wire [3:0] status_out;
 
-  
   wire [7:0] alu_a_bus;
   wire [7:0] alu_b_bus;
 
-  
   pc PC (
       .clk(clk),
+      .LP(LP),
+      .K(K),
       .pc(pc_out_bus)
   );
 
@@ -37,7 +35,6 @@ module computer (
       .out(im_out_bus)
   );
 
-  
   control CU (
     .opcode(opcode),
     .status(status_out),
@@ -50,9 +47,8 @@ module computer (
     .selB(selB),
     .selData(selData), 
     .alu_op(alu_op)
-);
+  );
 
- 
   wire [7:0] dmem_addr;
   wire [7:0] dmem_out;
 
@@ -63,17 +59,15 @@ module computer (
     .PC(pc_out_bus),   
     .sel(selData),
     .out(dmem_addr)
-);
-
+  );
 
   data_memory DM (
     .clk(clk),
     .address(dmem_addr),
-    .data_in(regB_out_bus),  
+    .data_in(alu_out_bus),
     .W(mem_we),
     .data_out(dmem_out)
-);
-
+  );
 
   wire [7:0] wb_data;
   muxWB muxWB (
@@ -83,7 +77,6 @@ module computer (
       .out(wb_data)
   );
 
-  
   register regA (
       .clk (clk),
       .data(wb_data),
@@ -98,7 +91,6 @@ module computer (
       .out (regB_out_bus)
   );
 
-  
   muxA muxA (
       .A  (regA_out_bus),
       .B  (regB_out_bus),
@@ -117,19 +109,17 @@ module computer (
       .out(alu_b_bus)
   );
 
-  
   alu ALU (
       .a  (alu_a_bus),
       .b  (alu_b_bus),
       .s  (alu_op),
       .out(alu_out_bus),
-      .Z(Z_from_alu),  // cambiado revisar
-      .N(N_from_alu),
-      .C(C_from_alu),
-      .V(V_from_alu)
+      .Z(Z),
+      .N(N),
+      .C(C),
+      .V(V)
   );
 
-  
   status status_reg (
       .clk(clk),
       .Z_in(Z),
